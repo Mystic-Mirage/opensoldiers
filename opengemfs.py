@@ -45,8 +45,8 @@ class OpengemFS(MountFS):
                             re_i = re.compile(r'patch', re.IGNORECASE)
                             if not re.match(re_i, d):
                                 mount.mountdir(d, OSFS(os.path.join(full_r, d)))
+                        multi.addfs('mount', mount)
         if not self.resource_list:
             raise ResourceNotFoundError(self.root_dir)
-        multi.addfs('mount', mount)
         self.mountdir('resource', multi)
         self.mountdir('cache', MemoryFS())
