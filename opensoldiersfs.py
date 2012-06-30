@@ -9,7 +9,7 @@ import os
 import re
 
 
-class OpengemFS(MountFS):
+class OpenSoldiersFS(MountFS):
 
     res_patterns = [
         ('', 'game.pak'),
@@ -22,7 +22,7 @@ class OpengemFS(MountFS):
     resource_list = []
 
     def __init__(self, root_dir='', *args, **kwargs):
-        super(OpengemFS, self).__init__(*args, **kwargs)
+        super(OpenSoldiersFS, self).__init__(*args, **kwargs)
         self.root_dir = root_dir
         multi = MultiFS()
         mount = MountFS()
