@@ -25,21 +25,20 @@ class VFS(MountFS):
         self.root_path = root_path
         resources = [r.replace('/', os.sep).strip(os.sep)
                      for r in self.resources]
-        multifs = MultiFS()
-        self.multifs = multifs
+        self.multifs = MultiFS()
 
         for resource in resources:
             pattern = re.compile(fnmatch.translate(resource), re.IGNORECASE)
-            for root, _, files in os.walk(root_path):
-                path = root.replace(root_path, '').strip(os.sep)
-                if re.match(pattern, path):
-                    multifs.addfs(path, OSFS(root))
-                else:
-                    files.sort()
-                    for f in files:
-                        full = os.path.join(root, f)
-                        path = full.replace(root_path, '').strip(os.sep)
-                        if re.match(pattern, path):
-                            multifs.addfs(path, ZipFS(full))
-        self.mountdir('resource', multifs)
+            for root, dirs, files in os.walk(root_path):
+                for d in sorted(dirs):
+                    full = os.path.join(root, d)
+                    path = full.replace(root_path, '').strip(os.sep)
+                    if re.match(pattern, path):
+                        self.multifs.addfs(path, OSFS(full))
+                for f in sorted(files):
+                    full = os.path.join(root, f)
+                    path = full.replace(root_path, '').strip(os.sep)
+                    if re.match(pattern, path):
+                        self.multifs.addfs(path, ZipFS(full))
+        self.mountdir('resource', self.multifs)
         self.mountdir('cache', MemoryFS())
